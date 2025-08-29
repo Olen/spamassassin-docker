@@ -1,7 +1,10 @@
 # SpamAssassin
 
-A SpamAssassin v4 [docker container](https://hub.docker.com/r/axllent/spamassassin)
+A slightly modified SpamAssassin v4 [docker container](https://hub.docker.com/r/axllent/spamassassin)
 running on Alpine Linux.
+
+My modifications mostly involves adding more spamassassin plugins and adding labels to the container 
+image
 
 This image is designed to listen on port 783 for third-party integration, and is not a full-featured
 spam solution. It was created primarily for integration with [Mailpit](https://mailpit.axllent.org).
@@ -12,21 +15,3 @@ account for local testing, however all DNS checks (including rDNS) can be enable
 
 Spam rules are automatically updated daily and on startup.
 
-
-## Usage
-
-```shell
-docker run -d \
-    -p 783:783 \
-    --name spamassassin \
-    axllent/spamassassin
-```
-
-To enable DNS tests:
-```shell
-docker run -d \
-    -p 783:783 \
-    -e DNS_CHECKS=1 \
-    --name spamassassin \
-    axllent/spamassassin
-```
