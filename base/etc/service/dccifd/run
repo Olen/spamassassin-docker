@@ -1,0 +1,11 @@
+#!/bin/sh -e
+exec 2>&1
+
+# Remove stale pid
+rm -f /var/run/dcc/dccifd.pid
+
+# Make sure dccproc is suid
+chown dcc /usr/bin/dccproc
+chmod u+s /usr/bin/dccproc
+
+exec /usr/libexec/start-dccifd -a \-b
