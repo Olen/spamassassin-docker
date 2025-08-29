@@ -17,6 +17,7 @@ ARG DESCRIPTION
 ARG LICENSE="GPL-3.0-or-later"
 ARG MAINTAINER
 ARG NAME
+ARG SOURCE="${WEBSITE}"
 ARG TITLE
 ARG VERSION
 ARG VENDOR="${MAINTAINER}"
@@ -27,7 +28,7 @@ LABEL org.opencontainers.image.created="${DATE}"
 LABEL org.opencontainers.image.description="${DESCRIPTION}"
 LABEL org.opencontainers.image.licenses="${LICENSE}"
 LABEL org.opencontainers.image.name="${NAME}"
-LABEL org.opencontainers.image.source="${WEBSITE}"
+LABEL org.opencontainers.image.source="${SOURCE}"
 LABEL org.opencontainers.image.title="${TITLE}"
 LABEL org.opencontainers.image.url="${WEBSITE}"
 LABEL org.opencontainers.image.vendor="${VENDOR}"

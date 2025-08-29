@@ -15,3 +15,5 @@ account for local testing, however all DNS checks (including rDNS) can be enable
 
 Spam rules are automatically updated daily and on startup.
 
+The shell-script `build.sh` can be used to build the image, but will need some local tweaks to handle
+pushing to container registry etc.
