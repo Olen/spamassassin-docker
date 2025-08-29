@@ -4,6 +4,13 @@ exec 2>&1
 # Remove stale pid
 rm -f /var/run/spamd.pid
 
+# Install spamassassin late to make sure the config bindmount is available
+apk add spamassassin
+
+if [ ! -f /home/spamassassin/.razor/identity ]; then
+    sudo -u spamassassin razor-admin -register
+fi
+
 # http://www.patorjk.com/software/taag/#p=display&c=echo&f=Big&t=SpamAssassin
 echo "   _____                                                      _       "
 echo "  / ____|                         /\                         (_)      "
@@ -16,6 +23,7 @@ echo "        |_|                                                           "
 echo
 
 sa-update && echo "Updated SpamAssassin rules" || echo "SpamAssassin rules up-to-date"
+
 
 if [ "$TRUSTED_NETWORKS" != "" ]; then
     echo "Applying TRUSTED_NETWORKS"
@@ -31,10 +39,13 @@ else
     rm -f /etc/mail/spamassassin/internal_networks.cf
 fi
 
+SPAMD_OPTIONS="--ip-address --allowed-ips 0.0.0.0/0 --allowed-ips [::]/0 -u spamassassin -g spamassassin --syslog stderr --nouser-config --allow-tell --pidfile /var/run/spamd.pid -D dkim"
 if [ "$DNS_CHECKS" = "true" ] || [ "$DNS_CHECKS" = "1" ]; then
     rm -f /etc/mail/spamassassin/rdns.cf
-    exec spamd --ip-address --allowed-ips 0.0.0.0/0 --allowed-ips [::]/0 -u nobody -g nogroup --syslog stderr --nouser-config --pidfile /var/run/spamd.pid
+    # exec spamd --ip-address --allowed-ips 0.0.0.0/0 --allowed-ips [::]/0 -u nobody -g nogroup --syslog stderr --nouser-config --allow-tell --pidfile /var/run/spamd.pid
 else
     echo "score RDNS_NONE 0" >/etc/mail/spamassassin/rdns.cf
-    exec spamd --local --ip-address --allowed-ips 0.0.0.0/0 --allowed-ips [::]/0 -u nobody -g nogroup --syslog stderr --nouser-config --pidfile /var/run/spamd.pid
+    SPAMD_OPTIONS="--local ${SPAMD_OPTIONS}"
+    # exec spamd --ip-address --allowed-ips 0.0.0.0/0 --allowed-ips [::]/0 -u nobody -g nogroup --syslog stderr --nouser-config --allow-tell --pidfile /var/run/spamd.pid --local
 fi
+exec spamd $SPAMD_OPTIONS
